@@ -1,0 +1,3 @@
+- Input box for setting seed of main whitlist account
+- fix add all whitelist button error set interval between each transaction
+- remove all functionality 
