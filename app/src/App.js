@@ -19,152 +19,77 @@ const App = () => {
   const [values, setValues] = useState([]);
   const [recipients, setRecipients] = useState([]);
   const network = clusterApiUrl('devnet');
-  // const NftLink = "https://raw.githubusercontent.com/rudranshsharma123/Certificate-Machine/smart-contract-cleon/test.json"
   const TOKEN_METADATA_PROGRAM_ID = new web3.PublicKey(
     "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
   );
-  // Controls how we want to acknowledge when a transaction is "done".
+
   const opts = {
     preflightCommitment: "processed"
   }
   const programID = new PublicKey(idl.metadata.address);
 
-  // const NftTitle = "Cukc";
-  // const NftSymbol = "CUCK";
-  const CREATE_MINT_SEED = "createmints";
 
-  // Only call this function once for each wallet address no need to run it again it will fail
-  const initializeStorageAccount = async () => {
+  const CREATE_MINT_SEED = "DDsFssAs";
+
+  const createWhitelist = async () => {
     const baseAccount = new PublicKey(walletAddress)
     const provider = getProvider();
     const program = new Program(idl, programID, provider);
-    const [pda, _] = await PublicKey.findProgramAddress(
-      [
-        baseAccount.toBuffer(),
-        Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED)),
-      ],
-      program.programId,
-    );
-    const txn = await program.methods
-      .initializeStorageAccount()
-      .accounts({
-        storageAccount: pda,
-      })
-      .rpc();
+      
+		const [pda, _] = await PublicKey.findProgramAddress(
+			[
+				baseAccount.toBuffer(),
+				Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED)),
+			],
+			program.programId,
+		);
+		const tx = await program.methods
+			.createWhitelist(CREATE_MINT_SEED)
+			.accounts({
+				mainWhitelistingAccount: pda,
+				authority: baseAccount.publicKey,
+			})
+			.rpc();
+		console.log("Your transaction signature", tx);
+
   }
- 
-  const mintProcess = async (buyer_address, name_of_nft, symbol_of_nft, metadata_uri, position) => {
-    try {
-   
-      
-      const buyer = new PublicKey(buyer_address)
-      const baseAccount = new PublicKey(walletAddress)
-      console.log(baseAccount)
-      const provider = getProvider();
-      const program = new Program(idl, programID, provider);
-      // const account = await program.account.baseAccount.fetch(baseAccount.publicKey);
-      const mint = Keypair.generate()
 
-      const tokenAddress = await utils.token.associatedAddress({
-        mint: mint.publicKey,
-        owner: baseAccount,
-      });
-      const [pda, _] = await PublicKey.findProgramAddress(
-        [
-          baseAccount.toBuffer(),
-          Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED)),
-        ],
-        program.programId,
-      );
+  
 
-      // await initializeStorageAccount();
+  const addWallet = async (value) => {
+     const baseAccount = new PublicKey(walletAddress)
+     const provider = getProvider();
+     const program = new Program(idl, programID, provider);
 
+     const key = new PublicKey(value)
 
-
-      // const txn = await program.methods
-      //   .initializeStorageAccount()
-      //   .accounts({
-      //     storageAccount: pda,
-      //   })
-      //   .rpc();
-      console.log(`New token: ${mint.publicKey}`);
-      const metadataAddress = (
-        await web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from("metadata"),
-            TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-            mint.publicKey.toBuffer(),
-          ],
-          TOKEN_METADATA_PROGRAM_ID,
-        )
-      )[0];
-      console.log("Metadata initialized");
-      const masterEditionAddress = (
-        await web3.PublicKey.findProgramAddress(
-          [
-            Buffer.from("metadata"),
-            TOKEN_METADATA_PROGRAM_ID.toBuffer(),
-            mint.publicKey.toBuffer(),
-            Buffer.from("edition"),
-          ],
-          TOKEN_METADATA_PROGRAM_ID,
-        )
-      )[0];
-      console.log("Master edition metadata initialized");
-      const tx = await program.methods
-        .mint(name_of_nft, symbol_of_nft, metadata_uri, baseAccount.publicKey)
-        .accounts({
-          storageAccount: pda,
-          masterEdition: masterEditionAddress,
-          metadata: metadataAddress,
-          mint: mint.publicKey,
-          tokenAccount: tokenAddress,
-          mintAuthority: baseAccount,
-          tokenMetadataProgram: TOKEN_METADATA_PROGRAM_ID,
-        })
-        .signers([mint])
-        .rpc();
-      console.log("Your transaction signature", tx);
-
-      // console.log("Got the account", account)
-      
-      const ownerTokenAddress = await utils.token.associatedAddress({
-        mint: mint.publicKey,
-        owner: baseAccount,
-      });
-      const buyerTokenAddress = await utils.token.associatedAddress({
-        mint: mint.publicKey,
-        owner: buyer,
-      });
-      // console.log(`Request to sell NFT: ${mint} for ${saleAmount} lamports.`);
-      console.log(`Owner's Token Address: ${ownerTokenAddress}`);
-      console.log(`Buyer's Token Address: ${buyerTokenAddress}`);
-
-      // Transact with the "sell" function in our on-chain program
-
-      await program.methods
-        .send()
-        .accounts({
-          mint: mint.publicKey,
-          ownerTokenAccount: ownerTokenAddress,
-          ownerAuthority: baseAccount,
-          buyerTokenAccount: buyerTokenAddress,
-          buyerAuthority: buyer,
-        })
-        .rpc();
-       
-    } catch (error) {
-      console.log("Error in mintProcess: ", error)
-      console.log("Number is ", position);
-
-      // await sleep(1000);
-      await mintProcess(recipients[position], NftTitle[position], NftSymbol[position], NftLink[position], position);
-      
-
-    }
+     const [pda, _] = await PublicKey.findProgramAddress(
+			[
+				baseAccount.toBuffer(),
+				Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED)),
+			],
+			program.programId,
+      console.log(values)
+		);
+	
+    
+		const [new_pda, _1] = await PublicKey.findProgramAddress(
+			[baseAccount.toBuffer(), key.toBuffer()],
+			program.programId,
+		);
+		const tx = await program.methods
+			.addWallet(CREATE_MINT_SEED)
+			.accounts({
+				mainWhitelistingAccount: pda,
+				whitelistedWallet: new_pda,
+				authority: baseAccount.publicKey,
+				user: key,
+			})
+			.rpc();
+		console.log("Your transaction signature", tx);
   }
-  // This function will be called when
-  // the file input changes
+
+
   const { SystemProgram, Keypair } = web3;
   const getProvider = () => {
     const connection = new Connection(network, opts.preflightCommitment);
@@ -212,20 +137,7 @@ const App = () => {
       Connect to Wallet
     </button>
   );
-  const sendAddress = async () => {
-    var recipients_length = recipients.length;
-    let position = 0;
-    for (var i = 0; i < recipients_length; i++) {
-      console.log(i);
-      console.log(namesUsers[i]);
-      
-      console.log(recipients[i]);
-      position = i;
-
-      await mintProcess(recipients[i], NftTitle[i], NftSymbol[i], NftLink[i], position);
-    
-  }
-  };
+  
   function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
   }
@@ -260,12 +172,16 @@ const App = () => {
         // Iterating data to get column name and their values
         results.data.map((d) => {
           rowsArray.push(Object.keys(d));
+
+          
           valuesArray.push(Object.values(d));
+
+
           recipients_to_send.push(Object.values(d)[1]);
           names.push(Object.values(d)[0]);
           symbols.push(Object.values(d)[3]);
           link.push(Object.values(d)[2]);
-          // string +="hello";
+          
         });
         
         setNftLink(link);
@@ -276,11 +192,13 @@ const App = () => {
         setValues(valuesArray);
         setnamesUsers(names);
       
-        console.log(recipients);
-        console.log(string);
-        console.log(results.data);
-        console.log(rowsArray[0]);
-        console.log(valuesArray);
+        //console.log(recipients);
+        //console.log(string);
+        //console.log(results.data);
+
+        //console.log(rowsArray[0]);
+
+        //console.log(valuesArray);
         
       },
       
@@ -292,7 +210,7 @@ const App = () => {
     // console.log("hello");
    
   };
-
+ 
 
 
   return (
@@ -301,26 +219,28 @@ const App = () => {
       <div className={walletAddress ? 'authed-container' : 'container'}>
 
         <div className="header-container">
-          <p className="header">Certificate Machine</p>
+          <p className="header">Solana Whitelist</p>
           <p className="sub-text">
-           Tool designed to help Institutions and Business to use Solana Blockchain! 
+           Whitelist tool used to gate programs on the Solana Blockchain! 
           </p>
         </div>
         <div>{!walletAddress && renderNotConnectedContainer()}</div>
         <div>
-          <button className = "cta-button button-to-transfer"  onClick={async () => {
-            mintProcess("3UEJXysyw2sWWNFhmjNvXqzMeg4HugiLCErYMxVuHX8W", "Random", "Ninja", "https://raw.githubusercontent.com/rudranshsharma123/Certificate-Machine/smart-contract-cleon/test.json", 0)
-          }}>Send NFTs</button>
         </div>
         <div>
-          <button className = "cta-button button-to-send"  onClick={async () => {
-            sendAddress();
-          }}>Send to All Adresses</button>
+          <button className = "cta-button button-to-send" onClick={async () => {
+             values.map((value) => {
+              addWallet(value);
+            })
+             
+             //addWallet("4SgKWtwQU6mNBKRrEPKczPRhKXTGnKmfJ2jL2bKJfzbd");
+          }}>Whietlist All Adresses in CSV</button>
         </div>
         <div>
           <button className = "cta-button button-to-init"  onClick={async () => {
-            initializeStorageAccount();
-          }}>Init Account</button>
+            createWhitelist();
+          }}>Create Whitelist</button>
+          
         </div>
         <div><p className="sub-text">
             Enter a csv file ✨
