@@ -29,7 +29,7 @@ const App = () => {
   const programID = new PublicKey(idl.metadata.address);
 
 
-  const CREATE_MINT_SEED = "SSFssAs";
+  const CREATE_MINT_SEED = "SPOFssAs";
 
   const createWhitelist = async () => {
     const baseAccount = new PublicKey(walletAddress)
