@@ -14,6 +14,8 @@ function Dashboard() {
     const [removeAddress, setRemoveAddress] = useState("")
     const [editAddress, setEditAddress] = useState("")
     const [changeAddress, setChangeAddress] = useState("")
+    const [account, setAccount] = useState("");
+
 
 
     const opts = {
@@ -115,6 +117,59 @@ function Dashboard() {
         setAddAddress("")
     }
 
+    const removeWallet = async (value) => {
+    try {
+      const baseAccount = new PublicKey(walletAddress)
+      const provider = getProvider();
+      const program = new Program(idl, programID, provider);
+
+      const key = new PublicKey(value)
+
+      console.log("Key: ", key);
+      console.log("Mint seed: ", seed);
+
+      const [pda, _] = await PublicKey.findProgramAddress(
+			[
+				baseAccount.toBuffer(),
+				Buffer.from(utils.bytes.utf8.encode(seed)),
+			],
+			program.programId,
+      console.log(value)
+	);
+	
+    
+    //generate pda of whitelisted account
+		const [new_pda, _1] = await PublicKey.findProgramAddress(
+			[baseAccount.toBuffer(), key.toBuffer()],
+			program.programId,
+		);
+
+    const firstBalance = await provider.connection.getBalance(baseAccount);
+    console.log("First Balance: ", firstBalance);
+
+    //Remove wallet
+		const tx = await program.methods
+			.removeWallet(seed)
+			.accounts({
+				mainWhitelistingAccount: pda,
+				whitelistedWallet: new_pda,
+				authority: baseAccount.publicKey,
+				user: key,
+			})
+			.rpc();
+		console.log("Your transaction signature", tx);
+
+    const finalBalance = await provider.connection.getBalance(baseAccount);
+    console.log("Final Balance: ", finalBalance);
+    
+
+    }
+    catch (error){
+      console.log("Error in removing whitelist: ", error);
+    }
+  }
+
+
 
     const editWhiteList = async () => {
         const baseAccount = new PublicKey(walletAddress)
@@ -175,7 +230,6 @@ function Dashboard() {
             </div>
             <div>
 
-            </div>
             <button
                 className="cta-button "
                 onClick={connectWallet}
@@ -187,6 +241,8 @@ function Dashboard() {
                 Remove From the whitelist
             </button>
             <input value={removeAddress} onChange={(e) => setRemoveAddress(e.target.value)}></input>
+            </div>
+
             <div>
                 <button
                     className="cta-button  "
@@ -201,7 +257,7 @@ function Dashboard() {
                 <input value={editAddress} onChange={(e) => setEditAddress(e.target.value)}></input>
                 <input value={changeAddress} onChange={(e) => changeAddress(e.target.value)}></input>
             </div>
-
+        
         </div>
 
         )
