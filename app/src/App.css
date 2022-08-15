@@ -1,220 +1,260 @@
 .App {
-  height: 100vh;
-  background-color: #1a202c;
-  overflow: auto;
-  text-align: center;
+	height: 100vh;
+	background-color: #1a202c;
+	overflow: auto;
+	text-align: center;
 }
 
+input {
+	border: 0;
+	border-radius: 12px;
+	background-color: black;
+	color: white;
+	letter-spacing: 1px;
+	font-size: 26px;
+	width: 400px;
+	margin-bottom: 10px;
+	margin: 10px;
+	padding: 10px 20px;
+	text-align: center;
+}
+
+input::placeholder {
+	color: gray;
+	letter-spacing: 2px;
+}
+
+input:focus {
+	outline: none;
+}
+textarea {
+	border: 0;
+	border-radius: 12px;
+	background-color: black;
+	color: white;
+	letter-spacing: 1px;
+	font-size: 26px;
+	width: 400px;
+	margin-bottom: 10px;
+	margin: 10px;
+	padding: 10px 20px;
+	text-align: center;
+}
+
+textarea::placeholder {
+	color: gray;
+	letter-spacing: 2px;
+}
+
+textarea:focus {
+	outline: none;
+}
 .container {
-  height: 100%;
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 30px 0 30px;
+	height: 100%;
+	display: flex;
+	position: relative;
+	flex-direction: column;
+	justify-content: center;
+	padding: 0 30px 0 30px;
 }
 
 .authed-container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding: 30px;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 30px;
 }
 
 .header {
-  margin: 0;
-  font-size: 50px;
-  font-weight: bold;
-  color: white;
-  margin:15px;
+	margin: 0;
+	font-size: 50px;
+	font-weight: bold;
+	color: white;
+	margin: 15px;
 }
 
 .sub-text {
-  font-size: 25px;
-  color: white;
+	font-size: 25px;
+	color: white;
 }
 
 .gradient-text {
-  background: -webkit-linear-gradient(left, #60c657 30%, #35aee2 60%);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+	background: -webkit-linear-gradient(left, #60c657 30%, #35aee2 60%);
+	background-clip: text;
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
 }
 
 .cta-button {
-  height: 45px;
-  border: 0;
-  width: auto;
-  padding-left: 40px;
-  padding-right: 40px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  color: white;
+	height: 45px;
+	border: 0;
+	width: auto;
+	padding-left: 40px;
+	padding-right: 40px;
+	border-radius: 10px;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: bold;
+	color: white;
 }
 
 .connect-wallet-button {
-  background: -webkit-linear-gradient(left, #60c657, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  margin:10px;
-  right: 100px;
-  top:0%;
-  position: absolute;
+	background: -webkit-linear-gradient(left, #60c657, #35aee2);
+	background-size: 200% 200%;
+	animation: gradient-animation 4s ease infinite;
+	margin: 10px;
+	right: 100px;
+	top: 0%;
+	position: absolute;
 }
-.button-to-init{
-  background: -webkit-linear-gradient(left, #60c657, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  margin:10px;
-  right: 350px;
-  top:0%;
-  position: absolute;
+.button-to-init {
+	background: -webkit-linear-gradient(left, #60c657, #35aee2);
+	background-size: 200% 200%;
+	animation: gradient-animation 4s ease infinite;
+	margin: 10px;
+	right: 350px;
+	top: 0%;
+	position: absolute;
 
-  /* position: absolute;
+	/* position: absolute;
   top:50%;
   left: 200px;
   width: 120px;
   transform: translateY(-50%); */
 }
 .submit-gif-button {
-  background: -webkit-linear-gradient(left, #4e44ce, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  margin-left: 10px;
+	background: -webkit-linear-gradient(left, #4e44ce, #35aee2);
+	background-size: 200% 200%;
+	animation: gradient-animation 4s ease infinite;
+	margin-left: 10px;
 }
 
 .footer-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  width: 100%;
-  bottom: 0;
-  left: 0;
-  padding-bottom: 45px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	left: 0;
+	padding-bottom: 45px;
 }
 
 .twitter-logo {
-  width: 35px;
-  height: 35px;
+	width: 35px;
+	height: 35px;
 }
 .styled-table {
-  border-collapse: collapse;
-  margin: 25px 0;
-  font-size: 0.9em;
-  font-family: sans-serif;
-  min-width: 400px;
-  
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+	border-collapse: collapse;
+	margin: 25px 0;
+	font-size: 0.9em;
+	font-family: sans-serif;
+	min-width: 400px;
+
+	box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 .styled-table thead tr {
-  background-color: #05a585;
-  color: #ffffff;
-  text-align: center;
- 
+	background-color: #05a585;
+	color: #ffffff;
+	text-align: center;
 }
 .styled-table th,
 .styled-table td {
-    padding: 15px 15px;
+	padding: 15px 15px;
 }
 .styled-table tbody tr {
-  border-bottom: 1px solid #009879;
+	border-bottom: 1px solid #009879;
 }
 
 .styled-table tbody tr:nth-of-type(even) {
-  background-color: #009879;
+	background-color: #009879;
 }
 
 .styled-table tbody tr:last-of-type {
-  border-bottom: 2px solid #009879;
+	border-bottom: 2px solid #009879;
 }
 .footer-text {
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
+	color: white;
+	font-size: 16px;
+	font-weight: bold;
 }
 .minus-text {
-  font-size: 16px;
-  color: white;
-  margin: 15px;
-  padding: 30px;
+	font-size: 16px;
+	color: white;
+	margin: 15px;
+	padding: 30px;
 }
 .button-to-transfer {
-  background: -webkit-linear-gradient(left, #12b89a, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  top: 60%;
-  left: 100px;
-  /* position:absolute; */
-  margin: 15px;
-  
+	background: -webkit-linear-gradient(left, #12b89a, #35aee2);
+	background-size: 200% 200%;
+	animation: gradient-animation 4s ease infinite;
+	top: 60%;
+	left: 100px;
+	/* position:absolute; */
+	margin: 15px;
 }
 .button-to-send {
-  background: -webkit-linear-gradient(left, #12b89a, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  left: 100px;
-  margin:15px;
-  /* position: absolute; */
-  top: 70%;
-
+	background: -webkit-linear-gradient(left, #12b89a, #35aee2);
+	background-size: 200% 200%;
+	animation: gradient-animation 4s ease infinite;
+	left: 100px;
+	margin: 15px;
+	/* position: absolute; */
+	top: 70%;
 }
 .gif-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-  grid-gap: 1.5rem;
-  justify-items: center;
-  margin: 0;
-  padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+	grid-gap: 1.5rem;
+	justify-items: center;
+	margin: 0;
+	padding: 0;
 }
 
 .gif-grid .gif-item {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  justify-self: center;
-  align-self: center;
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	justify-self: center;
+	align-self: center;
 }
 .select-file {
-  
-  background: -webkit-linear-gradient(left, #14EE97, #35aee2);
-  background-size: 200% 200%;
-  animation: gradient-animation 4s ease infinite;
-  height: 45px;
-  border: 0;
-  width: auto;
-  height: auto;
-  padding-left: 5px;
-  padding-right: 5px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  color: rgb(0, 0, 0);
+	background: -webkit-linear-gradient(left, #14ee97, #35aee2);
+	background-size: 200% 200%;
+	animation: gradient-animation 4s ease infinite;
+	height: 45px;
+	border: 0;
+	width: auto;
+	height: auto;
+	padding-left: 5px;
+	padding-right: 5px;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 16px;
+	font-weight: bold;
+	color: rgb(0, 0, 0);
 }
 .gif-item img {
-  width: 100%;
-  height: 300px;
-  border-radius: 10px;
-  object-fit: cover;
+	width: 100%;
+	height: 300px;
+	border-radius: 10px;
+	object-fit: cover;
 }
 
-.connected-container input[type='text'] {
-  display: inline-block;
-  color: white;
-  padding: 10px;
-  width: 50%;
-  height: 60px;
-  font-size: 16px;
-  box-sizing: border-box;
-  background-color: rgba(0, 0, 0, 0.25);
-  border: none;
-  border-radius: 10px;
-  margin: 50px auto;
+.connected-container input[type="text"] {
+	display: inline-block;
+	color: white;
+	padding: 10px;
+	width: 50%;
+	height: 60px;
+	font-size: 16px;
+	box-sizing: border-box;
+	background-color: rgba(0, 0, 0, 0.25);
+	border: none;
+	border-radius: 10px;
+	margin: 50px auto;
 }
 
 .connected-container button {
-  height: 50px;
+	height: 50px;
 }
