@@ -4,6 +4,7 @@ import '../../App.css';
 import idl from '../../assets/idl.json'
 import { Connection, PublicKey, clusterApiUrl, Keypair } from '@solana/web3.js';
 import { AnchorProvider, Program, Provider, web3, utils } from '@project-serum/anchor';
+import { useNavigate } from 'react-router-dom';
 
 function Dashboard() {
     const [seed, setSeed] = useState("")
@@ -14,13 +15,17 @@ function Dashboard() {
     const [removeAddress, setRemoveAddress] = useState("")
     const [editAddress, setEditAddress] = useState("")
     const [changeAddress, setChangeAddress] = useState("")
-
+    const navigate = useNavigate();
 
     const opts = {
         preflightCommitment: "processed"
     }
     const programID = new PublicKey(idl.metadata.address);
     const network = clusterApiUrl('devnet');
+
+    const handleDash = () => {
+        navigate("/");
+      };
 
     const searchWithSeed = async () => {
         const baseAccount = new PublicKey(walletAddress)
@@ -153,19 +158,25 @@ function Dashboard() {
 
 
     const renderDashboard = () => {
-        return (<div
+        return (
+        
+        <div
             style={{
-                "display": "flex",
+                
                 "alignItems": "center",
                 "justifyContent": "center"
             }}>
             <div>
-                <button
+                <button 
                     className="cta-button "
                     onClick={async () => { await addWhitelistWallet() }}
                     style={{
+                        "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
                         "margin": "20px",
-                        "color": "black"
+                        "color": "white",
+                        "background-size" : "200% 200%",
+                        "animation" : "gradient-animation 4s ease infinite",
+                           
                     }}
                 >
                     Add to the WhiteList
@@ -180,19 +191,26 @@ function Dashboard() {
                 className="cta-button "
                 onClick={connectWallet}
                 style={{
+                    "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
                     "margin": "20px",
-                    "color": "black"
+                    "color": "white",
+                    "background-size" : "200% 200%",
+                    "animation" : "gradient-animation 4s ease infinite",
                 }}
             >
-                Remove From the whitelist
+                Remove Address
             </button>
             <input value={removeAddress} onChange={(e) => setRemoveAddress(e.target.value)}></input>
             <div>
                 <button
                     className="cta-button  "
                     style={{
-                        "margin": "20px",
-                        "color": "black"
+                    "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                    "margin": "20px",
+                    "color": "white",
+                    "background-size" : "200% 200%",
+                    "animation" : "gradient-animation 4s ease infinite",
+
                     }}
 
                 >
@@ -235,6 +253,8 @@ function Dashboard() {
         return new Promise(resolve => setTimeout(resolve, time));
     }
 
+
+
     useEffect(() => {
         const onLoad = async () => {
             await checkIfWalletIsConnected();
@@ -249,8 +269,25 @@ function Dashboard() {
             <div>{!walletAddress && renderNotConnectedContainer()}</div>
 
             <div>
+                <button onClick={handleDash} className="cta-button" style={{
+                    "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                    "margin": "20px",
+                    "color": "white",
+                    "background-size" : "200% 200%",
+                    "animation" : "gradient-animation 4s ease infinite",
+
+                    }}>Home</button>
+                <h1 style={{
+                    "color": "white",
+                }}>Dashboard</h1>
                 <input value={seed} onChange={(e) => setSeed(e.target.value)}></input>
-                <button onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
+                <button className="cta-button" style={{
+                        "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                        "background-size" : "200% 200%",
+                        "animation" : "gradient-animation 4s ease infinite",
+                           
+                    }} 
+                    onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
             </div>
             <div style={{
                 "display": "flex",
