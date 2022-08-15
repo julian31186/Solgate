@@ -244,7 +244,7 @@ function Dashboard() {
 
             <button
                 className="cta-button "
-                onClick={connectWallet}
+                onClick={async () => {removeWallet(removeAddress)}}
                 style={{
                     "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
                     "margin": "20px",
