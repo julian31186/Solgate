@@ -29,7 +29,7 @@ const App = () => {
   const programID = new PublicKey(idl.metadata.address);
 
 
-  const CREATE_MINT_SEED = "SPOFssAs";
+  const CREATE_MINT_SEED = "SEssAs";
 
   const createWhitelist = async () => {
     const baseAccount = new PublicKey(walletAddress)
@@ -57,6 +57,8 @@ const App = () => {
   
 
   const addWallet = async (value) => {
+
+    try {
      const baseAccount = new PublicKey(walletAddress)
      const provider = getProvider();
      const program = new Program(idl, programID, provider);
@@ -87,7 +89,32 @@ const App = () => {
 			})
 			.rpc();
 		console.log("Your transaction signature", tx);
+ 
+  } catch (error)  {
+    console.log("Error in whitelist add: ", error)
+    
   }
+ 
+  }
+
+  const sendAddress = async () => {
+    var recipients_length = recipients.length;
+    for (var i = 0; i < recipients_length; i++) {
+      console.log(i);
+
+
+      console.log(recipients[i]);
+      
+
+      await addWallet(recipients[i]);
+
+    }
+  };
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+
 
 
   const { SystemProgram, Keypair } = web3;
@@ -229,9 +256,7 @@ const App = () => {
         </div>
         <div>
           <button className = "cta-button button-to-send" onClick={async () => {
-             values.map((value) => {
-              addWallet(value);
-            })
+             sendAddress()
              
              //addWallet("4SgKWtwQU6mNBKRrEPKczPRhKXTGnKmfJ2jL2bKJfzbd");
           }}>Whietlist All Adresses in CSV</button>
