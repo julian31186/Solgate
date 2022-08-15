@@ -354,7 +354,7 @@ const App = () => {
           "animation" : "gradient-animation 4s ease infinite",
         }} className = "cta-button"  onClick={async () => {
             removeWallet(account);
-          }}>Remove Whitelist</button>
+          }}>Remove Whitelisted Account</button>
           <input value={seed} onChange={(e) => setSeed(e.target.value)} placeholder="Whitelist Seed" style={{
           "margin" : "20px",
           "padding" : "10px"
