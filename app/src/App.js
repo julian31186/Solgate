@@ -4,17 +4,19 @@ import React, { useState, useEffect } from "react";
 import idl from './assets/idl.json'
 import { Connection, PublicKey, clusterApiUrl, Keypair } from '@solana/web3.js';
 import { AnchorProvider, Program, Provider, web3, utils } from '@project-serum/anchor';
+import { seed } from '@project-serum/anchor/dist/cjs/idl';
 const App = () => {
 
   const allowedExtensions = ["csv"];
-  // It state will contain the error when
-  // correct file extension is not used
+
   const [walletAddress, setWalletAddress] = useState(null);
   const [namesUsers, setnamesUsers] = useState([]);
   const [NftTitle, setNftTitle] = useState([]);
   const [NftSymbol, setNftSymbol] = useState([]);
   const [NftLink, setNftLink] = useState([]);
-  // It will store the file uploaded by the user
+
+  const [seed,setSeed] = useState("");
+
   const [tableRows, setTableRows] = useState([]);
   const [values, setValues] = useState([]);
   const [recipients, setRecipients] = useState([]);
@@ -29,7 +31,7 @@ const App = () => {
   const programID = new PublicKey(idl.metadata.address);
 
 
-  const CREATE_MINT_SEED = "SEssAs";
+  const CREATE_MINT_SEED = seed;
 
   const createWhitelist = async () => {
     const baseAccount = new PublicKey(walletAddress)
@@ -51,7 +53,7 @@ const App = () => {
 			})
 			.rpc();
 		console.log("Your transaction signature", tx);
-
+    setSeed("")
   }
 
   
@@ -89,6 +91,7 @@ const App = () => {
 			})
 			.rpc();
 		console.log("Your transaction signature", tx);
+    
  
   } catch (error)  {
     console.log("Error in whitelist add: ", error)
@@ -254,6 +257,28 @@ const App = () => {
         <div>{!walletAddress && renderNotConnectedContainer()}</div>
         <div>
         </div>
+        
+        
+        <div style={{
+          "display": "flex",
+          "align-items" : "center",
+          "justify-content" : "center"
+        }}>
+          <button style={{
+          "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
+          "background-size" : "200% 200%",
+          "animation" : "gradient-animation 4s ease infinite",
+        }} className = "cta-button"  onClick={async () => {
+            createWhitelist();
+          }}>Create Whitelist</button>
+          <input value={seed} onChange={(e) => setSeed(e.target.value)} placeholder="Whitelist Seed" style={{
+          "margin" : "20px",
+          "padding" : "10px"
+        }} className=""></input>
+        
+          
+        </div>
+
         <div>
           <button className = "cta-button button-to-send" onClick={async () => {
              sendAddress()
@@ -261,12 +286,8 @@ const App = () => {
              //addWallet("4SgKWtwQU6mNBKRrEPKczPRhKXTGnKmfJ2jL2bKJfzbd");
           }}>Whietlist All Adresses in CSV</button>
         </div>
-        <div>
-          <button className = "cta-button button-to-init"  onClick={async () => {
-            createWhitelist();
-          }}>Create Whitelist</button>
-          
-        </div>
+
+
         <div><p className="sub-text">
             Enter a csv file ✨
           </p>
