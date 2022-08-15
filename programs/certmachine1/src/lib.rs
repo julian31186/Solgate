@@ -5,7 +5,7 @@ use {
     mpl_token_metadata::{instruction as token_instruction, ID as TOKEN_METADATA_ID},
 };
 
-declare_id!("H4478JdnqaGXKrNDa8WDVMmnVF2zMjoUqcscjWdC7X7h");
+declare_id!("32wMorHUnU6UhFbkzzNM6Npg2ztQGHsjuDnMYRrn8Dc2");
 const CREATE_MINT_SEED: &[u8] = b"createmints";
 
 #[program]

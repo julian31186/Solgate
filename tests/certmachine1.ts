@@ -20,21 +20,21 @@ describe("certmachine1", () => {
 		"metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s",
 	);
 	const buyer = new PublicKey("7iuqddUQJhger2p75SGV3MngZW6WEG6DDnW3U4yZHYWK");
-	// it("Creates the Storage Account", async () => {
-	// 	const [pda, _] = await PublicKey.findProgramAddress(
-	// 		[
-	// 			wallet.publicKey.toBuffer(),
-	// 			Buffer.from(anchor.utils.bytes.utf8.encode(CREATE_MINT_SEED)),
-	// 		],
-	// 		program.programId,
-	// 	);
-	// 	const txn = await program.methods
-	// 		.initializeStorageAccount()
-	// 		.accounts({
-	// 			storageAccount: pda,
-	// 		})
-	// 		.rpc();
-	// });
+	it("Creates the Storage Account", async () => {
+	 	const [pda, _] = await PublicKey.findProgramAddress(
+	 		[
+	 			wallet.publicKey.toBuffer(),
+	 			Buffer.from(anchor.utils.bytes.utf8.encode(CREATE_MINT_SEED)),
+	 		],
+	 		program.programId,
+	 	);
+	 	const txn = await program.methods
+	 		.initializeStorageAccount()
+	 		.accounts({
+	 			storageAccount: pda,
+	 		})
+	 		.rpc();
+	 });
 	const mint = Keypair.generate();
 	it("Is initialized!", async () => {
 		// Add your test here.

@@ -16,6 +16,7 @@ const App = () => {
   const [NftLink, setNftLink] = useState([]);
 
   const [seed,setSeed] = useState("");
+  const [account, setAccount] = useState("");
 
   const [tableRows, setTableRows] = useState([]);
   const [values, setValues] = useState([]);
@@ -67,6 +68,9 @@ const App = () => {
 
      const key = new PublicKey(value)
 
+     console.log("Key: ", key);
+      console.log("Mint seed, ", CREATE_MINT_SEED);
+
      const [pda, _] = await PublicKey.findProgramAddress(
 			[
 				baseAccount.toBuffer(),
@@ -98,6 +102,58 @@ const App = () => {
     
   }
  
+  }
+
+  const removeWallet = async (value) => {
+    try {
+      const baseAccount = new PublicKey(walletAddress)
+      const provider = getProvider();
+      const program = new Program(idl, programID, provider);
+
+      const key = new PublicKey(value)
+
+      console.log("Key: ", key);
+      console.log("Mint seed: ", CREATE_MINT_SEED);
+
+      const [pda, _] = await PublicKey.findProgramAddress(
+			[
+				baseAccount.toBuffer(),
+				Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED)),
+			],
+			program.programId,
+      console.log(values)
+		);
+	
+    
+    //generate pda of whitelisted account
+		const [new_pda, _1] = await PublicKey.findProgramAddress(
+			[baseAccount.toBuffer(), key.toBuffer()],
+			program.programId,
+		);
+
+    const firstBalance = await provider.connection.getBalance(baseAccount);
+    console.log("First Balance: ", firstBalance);
+
+    //Remove wallet
+		const tx = await program.methods
+			.removeWallet(CREATE_MINT_SEED)
+			.accounts({
+				mainWhitelistingAccount: pda,
+				whitelistedWallet: new_pda,
+				authority: baseAccount.publicKey,
+				user: key,
+			})
+			.rpc();
+		console.log("Your transaction signature", tx);
+
+    const finalBalance = await provider.connection.getBalance(baseAccount);
+    console.log("Final Balance: ", finalBalance);
+    
+
+    }
+    catch (error){
+      console.log("Error in removing whitelist: ", error);
+    }
   }
 
   const sendAddress = async () => {
@@ -284,7 +340,31 @@ const App = () => {
              sendAddress()
              
              //addWallet("4SgKWtwQU6mNBKRrEPKczPRhKXTGnKmfJ2jL2bKJfzbd");
-          }}>Whietlist All Adresses in CSV</button>
+          }}>Whitelist All Addresses in CSV</button>
+        </div>
+
+        <div style={{
+          "display": "flex",
+          "align-items" : "center",
+          "justify-content" : "center"
+        }}>
+          <button style={{
+          "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
+          "background-size" : "200% 200%",
+          "animation" : "gradient-animation 4s ease infinite",
+        }} className = "cta-button"  onClick={async () => {
+            removeWallet(account);
+          }}>Remove Whitelist</button>
+          <input value={seed} onChange={(e) => setSeed(e.target.value)} placeholder="Whitelist Seed" style={{
+          "margin" : "20px",
+          "padding" : "10px"
+        }} className=""></input>
+        <input value={account} onChange={(e) => setAccount(e.target.value)} placeholder="Account Seed" style={{
+          "margin" : "20px",
+          "padding" : "10px"
+        }} className=""></input>
+
+          
         </div>
 
 
