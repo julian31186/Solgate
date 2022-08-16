@@ -54,7 +54,7 @@ const App = () => {
 			})
 			.rpc();
 		console.log("Your transaction signature", tx);
-    setSeed("")
+    
   }
 
   

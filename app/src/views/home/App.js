@@ -68,6 +68,11 @@ const App = () => {
 
       const key = new PublicKey(value)
 
+
+      console.log(value)
+      console.log("Key: ", key.toString());
+      console.log("Mint seed, ", CREATE_MINT_SEED);
+
       const [pda, _] = await PublicKey.findProgramAddress(
         [
           baseAccount.toBuffer(),
