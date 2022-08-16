@@ -40,6 +40,7 @@ const App = () => {
   const CREATE_MINT_SEED = seed;
 
   const createWhitelist = async () => {
+    if(!walletAddress) return;
     const baseAccount = new PublicKey(walletAddress);
     const provider = getProvider();
     const program = new Program(idl, programID, provider);
@@ -70,7 +71,7 @@ const App = () => {
 
       const key = new PublicKey(value);
 
-      console.log(value);
+      
       console.log("Key: ", key.toString());
       console.log("Mint seed, ", CREATE_MINT_SEED);
 
@@ -84,7 +85,7 @@ const App = () => {
       );
 
       const [new_pda, _1] = await PublicKey.findProgramAddress(
-        [baseAccount.toBuffer(), key.toBuffer()],
+        [baseAccount.toBuffer(), key.toBuffer(), Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED))],
         program.programId
       );
       const tx = await program.methods

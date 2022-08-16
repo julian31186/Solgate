@@ -82,7 +82,7 @@ const App = () => {
 	
     
 		const [new_pda, _1] = await PublicKey.findProgramAddress(
-			[baseAccount.toBuffer(), key.toBuffer()],
+			[baseAccount.toBuffer(), key.toBuffer(), Buffer.from(utils.bytes.utf8.encode(CREATE_MINT_SEED))],
 			program.programId,
 		);
 		const tx = await program.methods

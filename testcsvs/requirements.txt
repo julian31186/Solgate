@@ -1,4 +1,3 @@
 
-- remove all functionality 
-- bundle transactionsfor addAll
-- change style slightly
+- try columns only name and recipent
+- move dashboard to center 

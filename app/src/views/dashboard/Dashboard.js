@@ -198,7 +198,7 @@ function Dashboard() {
 
             //generate pda of whitelisted account
             const [new_pda, _1] = await PublicKey.findProgramAddress(
-                [baseAccount.toBuffer(), key.toBuffer()],
+                [baseAccount.toBuffer(), key.toBuffer(), Buffer.from(utils.bytes.utf8.encode(seed))],
                 program.programId,
             );
 
@@ -256,7 +256,7 @@ function Dashboard() {
             program.programId,
         );
         const [new_pda, _1] = await PublicKey.findProgramAddress(
-            [baseAccount.toBuffer(), key.toBuffer()],
+            [baseAccount.toBuffer(), key.toBuffer(), Buffer.from(utils.bytes.utf8.encode(seed))],
             program.programId,
         );
         try {
@@ -303,7 +303,7 @@ function Dashboard() {
         // 	await program.account.mainWhiteListingAccount.fetch(pda);
         // console.log(mainWhitelistingAccount.counter);
         const [new_pda, _1] = await PublicKey.findProgramAddress(
-            [baseAccount.toBuffer(), key.toBuffer()],
+            [baseAccount.toBuffer(), key.toBuffer(), Buffer.from(utils.bytes.utf8.encode(seed))],
             program.programId,
         );
 
@@ -459,8 +459,10 @@ function Dashboard() {
     }, []);
 
     return (
-        <div className='App'>
-            <div>{!walletAddress && renderNotConnectedContainer()}</div>
+        <div  className='App'>
+            <div style={{
+            "margin-top": "13rem",
+        }}>{!walletAddress && renderNotConnectedContainer()}</div>
             <CToaster ref={toaster} push={toast} placement="top-end" />
             <div>
                 <button onClick={handleDash} className="cta-button" style={{
