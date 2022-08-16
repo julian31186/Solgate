@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import '../../App.css';
 
 import idl from '../../assets/idl.json'
 import { Connection, PublicKey, clusterApiUrl, Keypair } from '@solana/web3.js';
 import { AnchorProvider, Program, Provider, web3, utils } from '@project-serum/anchor';
 import { useNavigate } from 'react-router-dom';
+import { CToast, CToastBody, CToaster, CToastHeader } from '@coreui/react';
+import '@coreui/coreui/dist/css/coreui.min.css'
 
 function Dashboard() {
     const [seed, setSeed] = useState("")
@@ -16,7 +18,29 @@ function Dashboard() {
     const [editAddress, setEditAddress] = useState("")
     const [changeAddress, setChangeAddress] = useState("")
     const [account, setAccount] = useState("");
-
+    const [ifWhitelisted, setIfWhitelisted] = useState("");
+    const [toast, addToast] = useState(0)
+    const toaster = useRef()
+    const exampleToast = (message, action) => {
+        return (<CToast>
+            <CToastHeader closeButton>
+                <svg
+                    className="rounded me-2"
+                    width="20"
+                    height="20"
+                    xmlns="http://www.w3.org/2000/svg"
+                    preserveAspectRatio="xMidYMid slice"
+                    focusable="false"
+                    role="img"
+                >
+                    <rect width="100%" height="100%" fill="#007aff"></rect>
+                </svg>
+                <strong className="me-auto">Message From Solana Whitelisting</strong>
+                <small>{action}</small>
+            </CToastHeader>
+            <CToastBody>{message}</CToastBody>
+        </CToast>)
+    }
 
     const navigate = useNavigate();
 
@@ -28,7 +52,7 @@ function Dashboard() {
 
     const handleDash = () => {
         navigate("/");
-      };
+    };
 
     const searchWithSeed = async () => {
         const baseAccount = new PublicKey(walletAddress)
@@ -48,9 +72,17 @@ function Dashboard() {
 
         } catch (error) {
             console.log(error);
+            const message = "Sorry you have entered wrong seed no whitelist exists"
+            const action = "Error"
+            addToast(exampleToast(message, action));
+            setPda("");
+            setSeed("")
             return;
         }
         setPda(pda);
+        const message = "Yayy, we found your whitelist you can now see and make changes"
+        const action = "information"
+        addToast(exampleToast(message, action));
         // setSeed("")
         setIsSeed(true)
     }
@@ -110,70 +142,97 @@ function Dashboard() {
             [baseAccount.toBuffer(), key.toBuffer()],
             program.programId,
         );
-        const tx = await program.methods
-            .addWallet(seed)
-            .accounts({
-                mainWhitelistingAccount: pda,
-                whitelistedWallet: new_pda,
-                authority: baseAccount,
-                user: key,
-            })
-            .rpc();
-        console.log("Your transaction signature", tx);
-        setAddAddress("")
+        try {
+            const tx = await program.methods
+                .addWallet(seed)
+                .accounts({
+                    mainWhitelistingAccount: pda,
+                    whitelistedWallet: new_pda,
+                    authority: baseAccount,
+                    user: key,
+                })
+                .rpc();
+            console.log("Your transaction signature", tx);
+            setAddAddress("")
+            const message = "Yayy, we were able to add that wallet"
+            const action = "information"
+            addToast(exampleToast(message, action));
+            setRemoveAddress("")
+
+        }
+
+        catch (error) {
+            console.log("Error in removing whitelist: ", error);
+            const message = "Sorry, the account has already been whitelisted"
+            const action = "Error"
+
+            addToast(exampleToast(message, action));
+            setRemoveAddress("")
+
+        }
+
     }
 
     const removeWallet = async (value) => {
-    try {
-      const baseAccount = new PublicKey(walletAddress)
-      const provider = getProvider();
-      const program = new Program(idl, programID, provider);
+        try {
+            const baseAccount = new PublicKey(walletAddress)
+            const provider = getProvider();
+            const program = new Program(idl, programID, provider);
 
-      const key = new PublicKey(value)
+            const key = new PublicKey(value)
 
-      console.log("Key: ", key);
-      console.log("Mint seed: ", seed);
+            console.log("Key: ", key);
+            console.log("Mint seed: ", seed);
 
-      const [pda, _] = await PublicKey.findProgramAddress(
-			[
-				baseAccount.toBuffer(),
-				Buffer.from(utils.bytes.utf8.encode(seed)),
-			],
-			program.programId,
-      console.log(value)
-	);
-	
-    
-    //generate pda of whitelisted account
-		const [new_pda, _1] = await PublicKey.findProgramAddress(
-			[baseAccount.toBuffer(), key.toBuffer()],
-			program.programId,
-		);
+            const [pda, _] = await PublicKey.findProgramAddress(
+                [
+                    baseAccount.toBuffer(),
+                    Buffer.from(utils.bytes.utf8.encode(seed)),
+                ],
+                program.programId,
+                console.log(value)
+            );
 
-    const firstBalance = await provider.connection.getBalance(baseAccount);
-    console.log("First Balance: ", firstBalance);
 
-    //Remove wallet
-		const tx = await program.methods
-			.removeWallet(seed)
-			.accounts({
-				mainWhitelistingAccount: pda,
-				whitelistedWallet: new_pda,
-				authority: baseAccount.publicKey,
-				user: key,
-			})
-			.rpc();
-		console.log("Your transaction signature", tx);
+            //generate pda of whitelisted account
+            const [new_pda, _1] = await PublicKey.findProgramAddress(
+                [baseAccount.toBuffer(), key.toBuffer()],
+                program.programId,
+            );
 
-    const finalBalance = await provider.connection.getBalance(baseAccount);
-    console.log("Final Balance: ", finalBalance);
-    
+            const firstBalance = await provider.connection.getBalance(baseAccount);
+            console.log("First Balance: ", firstBalance);
 
+            //Remove wallet
+            const tx = await program.methods
+                .removeWallet(seed)
+                .accounts({
+                    mainWhitelistingAccount: pda,
+                    whitelistedWallet: new_pda,
+                    authority: baseAccount.publicKey,
+                    user: key,
+                })
+                .rpc();
+            console.log("Your transaction signature", tx);
+
+            const finalBalance = await provider.connection.getBalance(baseAccount);
+            console.log("Final Balance: ", finalBalance);
+            const message = "Yayy, we were able to remove that wallet"
+            const action = "information"
+            addToast(exampleToast(message, action));
+            setRemoveAddress("")
+
+        }
+        catch (error) {
+            console.log("Error in removing whitelist: ", error);
+            const message = "Sorry, the account has not been whitelisted"
+            const action = "Error"
+
+            addToast(exampleToast(message, action));
+            setRemoveAddress("")
+
+        }
     }
-    catch (error){
-      console.log("Error in removing whitelist: ", error);
-    }
-  }
 
 
 
@@ -198,86 +257,162 @@ function Dashboard() {
             [baseAccount.toBuffer(), key.toBuffer()],
             program.programId,
         );
-        const tx = await program.methods
-            .editWallet(seed)
-            .accounts({
-                mainWhitelistingAccount: pda,
-                whitelistedWallet: new_pda,
-                authority: baseAccount,
-                user: key,
-                newWlAccount: new_pda1,
-                newUser: newWalletAddress,
-            })
-            .rpc();
+        try {
+            const tx = await program.methods
+                .editWallet(seed)
+                .accounts({
+                    mainWhitelistingAccount: pda,
+                    whitelistedWallet: new_pda,
+                    authority: baseAccount,
+                    user: key,
+                    newWlAccount: new_pda1,
+                    newUser: newWalletAddress,
+                })
+                .rpc();
+
+            console.log(tx);
+            const message = "Yaay, the account is changed"
+            const action = "Information"
+
+            addToast(exampleToast(message, action));
+        } catch (error) {
+            console.log(error);
+            const message = "Sorry, the account has not been whitelisted"
+            const action = "Error"
+
+            addToast(exampleToast(message, action));
+        }
+    }
+
+    const checkIfWhiteListed = async () => {
+        const baseAccount = new PublicKey(walletAddress)
+        const provider = getProvider();
+        const program = new Program(idl, programID, provider);
+        const key = new PublicKey(ifWhitelisted);
+
+        const [pda, _] = await PublicKey.findProgramAddress(
+            [
+                baseAccount.toBuffer(),
+                Buffer.from(utils.bytes.utf8.encode(seed)),
+            ],
+            program.programId,
+        );
+        // const mainWhitelistingAccount =
+        // 	await program.account.mainWhiteListingAccount.fetch(pda);
+        // console.log(mainWhitelistingAccount.counter);
+        const [new_pda, _1] = await PublicKey.findProgramAddress(
+            [baseAccount.toBuffer(), key.toBuffer()],
+            program.programId,
+        );
+
+        try {
+            const tx = await program.methods
+                .checkWallet(seed)
+                .accounts({
+                    mainWhitelistingAccount: pda,
+                    whitelistedWallet: new_pda,
+                    authority: baseAccount,
+                    user: key,
+                })
+                .rpc();
+            const message = "Yaay, the account is whitelisted"
+            const action = "Information"
+
+            addToast(exampleToast(message, action));
+            console.log(tx);
+        } catch (error) {
+            console.log(error);
+            const message = "Sorry, the account has not been whitelisted"
+            const action = "Error"
+
+            addToast(exampleToast(message, action));
+        }
 
     }
 
-
     const renderDashboard = () => {
         return (
-        
-        <div
-            style={{
-                
-                "alignItems": "center",
-                "justifyContent": "center"
-            }}>
-            <div>
-                <button 
-                    className="cta-button "
-                    onClick={async () => { await addWhitelistWallet() }}
-                    style={{
-                        "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
-                        "margin": "20px",
-                        "color": "white",
-                        "background-size" : "200% 200%",
-                        "animation" : "gradient-animation 4s ease infinite",
-                           
-                    }}
-                >
-                    Add to the WhiteList
-                </button>
-                <input value={addAddress} onChange={(e) => setAddAddress(e.target.value)}>
-                </input>
-            </div>
-            <div>
 
-            <button
-                className="cta-button "
-                onClick={async () => {removeWallet(removeAddress)}}
+            <div
                 style={{
-                    "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
-                    "margin": "20px",
-                    "color": "white",
-                    "background-size" : "200% 200%",
-                    "animation" : "gradient-animation 4s ease infinite",
-                }}
-            >
-                Remove Address
-            </button>
-            <input value={removeAddress} onChange={(e) => setRemoveAddress(e.target.value)}></input>
+
+                    "alignItems": "center",
+                    "justifyContent": "center"
+                }}>
+
+                <div>
+                    <button
+                        className="cta-button "
+                        onClick={async () => { await addWhitelistWallet() }}
+                        style={{
+                            "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                            "margin": "20px",
+                            "color": "white",
+                            "background-size": "200% 200%",
+                            "animation": "gradient-animation 4s ease infinite",
+
+                        }}
+                    >
+                        Add to the WhiteList
+                    </button>
+                    <input value={addAddress} onChange={(e) => setAddAddress(e.target.value)}>
+                    </input>
+                </div>
+                <div>
+
+                    <button
+                        className="cta-button "
+                        onClick={async () => { removeWallet(removeAddress) }}
+                        style={{
+                            "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                            "margin": "20px",
+                            "color": "white",
+                            "background-size": "200% 200%",
+                            "animation": "gradient-animation 4s ease infinite",
+                        }}
+                    >
+                        Remove Address
+                    </button>
+                    <input value={removeAddress} onChange={(e) => setRemoveAddress(e.target.value)}></input>
+                </div>
+                <div>
+
+                    <button
+                        className="cta-button "
+                        onClick={async () => { await checkIfWhiteListed() }}
+                        style={{
+                            "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                            "margin": "20px",
+                            "color": "white",
+                            "background-size": "200% 200%",
+                            "animation": "gradient-animation 4s ease infinite",
+                        }}
+                    >
+                        Check if Whietlisted
+                    </button>
+                    <input value={ifWhitelisted} onChange={(e) => setIfWhitelisted(e.target.value)}></input>
+                </div>
+
+                <div>
+                    <button
+                        className="cta-button  "
+                        style={{
+                            "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                            "margin": "20px",
+                            "color": "white",
+                            "background-size": "200% 200%",
+                            "animation": "gradient-animation 4s ease infinite",
+
+                        }}
+                        onClick={async () => { await editWhiteList() }}
+                    >
+                        Edit From the whitelist
+                    </button>
+                    <input value={editAddress} onChange={(e) => setEditAddress(e.target.value)}></input>
+                    <input value={changeAddress} onChange={(e) => setChangeAddress(e.target.value)}></input>
+                </div>
+
             </div>
-
-            <div>
-                <button
-                    className="cta-button  "
-                    style={{
-                    "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
-                    "margin": "20px",
-                    "color": "white",
-                    "background-size" : "200% 200%",
-                    "animation" : "gradient-animation 4s ease infinite",
-
-                    }}
-
-                >
-                    Edit From the whitelist
-                </button>
-                <input value={editAddress} onChange={(e) => setEditAddress(e.target.value)}></input>
-                <input value={changeAddress} onChange={(e) => changeAddress(e.target.value)}></input>
-            </div>
-        
-        </div>
 
         )
 
@@ -324,26 +459,26 @@ function Dashboard() {
     return (
         <div className='App'>
             <div>{!walletAddress && renderNotConnectedContainer()}</div>
-
+            <CToaster ref={toaster} push={toast} placement="top-end" />
             <div>
                 <button onClick={handleDash} className="cta-button" style={{
-                    "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                    "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
                     "margin": "20px",
                     "color": "white",
-                    "background-size" : "200% 200%",
-                    "animation" : "gradient-animation 4s ease infinite",
+                    "background-size": "200% 200%",
+                    "animation": "gradient-animation 4s ease infinite",
 
-                    }}>Home</button>
+                }}>Home</button>
                 <h1 style={{
                     "color": "white",
                 }}>Dashboard</h1>
                 <input value={seed} onChange={(e) => setSeed(e.target.value)}></input>
                 <button className="cta-button" style={{
-                        "background" : "-webkit-linear-gradient(left, #60c657, #35aee2)",
-                        "background-size" : "200% 200%",
-                        "animation" : "gradient-animation 4s ease infinite",
-                           
-                    }} 
+                    "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
+                    "background-size": "200% 200%",
+                    "animation": "gradient-animation 4s ease infinite",
+
+                }}
                     onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
             </div>
             <div style={{
@@ -353,6 +488,7 @@ function Dashboard() {
             }}>
                 {pda && renderDashboard()}
             </div>
+
         </div>
     )
 }
