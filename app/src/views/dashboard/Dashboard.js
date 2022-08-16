@@ -55,6 +55,8 @@ function Dashboard() {
     };
 
     const searchWithSeed = async () => {
+        if(walletAddress === null) return;
+
         const baseAccount = new PublicKey(walletAddress)
         const provider = getProvider();
         const program = new Program(idl, programID, provider);
@@ -355,7 +357,7 @@ function Dashboard() {
                     >
                         Add to the WhiteList
                     </button>
-                    <input value={addAddress} onChange={(e) => setAddAddress(e.target.value)}>
+                    <input placeholder="Add" value={addAddress} onChange={(e) => setAddAddress(e.target.value)}>
                     </input>
                 </div>
                 <div>
@@ -373,7 +375,7 @@ function Dashboard() {
                     >
                         Remove Address
                     </button>
-                    <input value={removeAddress} onChange={(e) => setRemoveAddress(e.target.value)}></input>
+                    <input placeholder="Remove" value={removeAddress} onChange={(e) => setRemoveAddress(e.target.value)}></input>
                 </div>
                 <div>
 
@@ -390,7 +392,7 @@ function Dashboard() {
                     >
                         Check if Whietlisted
                     </button>
-                    <input value={ifWhitelisted} onChange={(e) => setIfWhitelisted(e.target.value)}></input>
+                    <input placeholder="Check if whitelisted" value={ifWhitelisted} onChange={(e) => setIfWhitelisted(e.target.value)}></input>
                 </div>
 
                 <div>
@@ -408,8 +410,8 @@ function Dashboard() {
                     >
                         Edit From the whitelist
                     </button>
-                    <input value={editAddress} onChange={(e) => setEditAddress(e.target.value)}></input>
-                    <input value={changeAddress} onChange={(e) => setChangeAddress(e.target.value)}></input>
+                    <input placeholder="Address 1" value={editAddress} onChange={(e) => setEditAddress(e.target.value)}></input>
+                    <input placeholder="New Address" value={changeAddress} onChange={(e) => setChangeAddress(e.target.value)}></input>
                 </div>
 
             </div>
@@ -472,14 +474,14 @@ function Dashboard() {
                 <h1 style={{
                     "color": "white",
                 }}>Dashboard</h1>
-                <input value={seed} onChange={(e) => setSeed(e.target.value)}></input>
+                <input placeholder="Search" value={seed} onChange={(e) => setSeed(e.target.value)}></input>
                 <button className="cta-button" style={{
                     "background": "-webkit-linear-gradient(left, #60c657, #35aee2)",
                     "background-size": "200% 200%",
                     "animation": "gradient-animation 4s ease infinite",
 
                 }}
-                    onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
+                     onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
             </div>
             <div style={{
                 "display": "flex",

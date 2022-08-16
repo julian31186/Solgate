@@ -73,6 +73,14 @@ textarea:focus {
 	margin: 15px;
 }
 
+.header2 {
+	margin: 0;
+	font-size: 50px;
+	font-weight: bold;
+	color: white;
+	margin: 15px;
+}
+
 .sub-text {
 	font-size: 25px;
 	color: white;
