@@ -55,7 +55,7 @@ function Dashboard() {
     };
 
     const searchWithSeed = async () => {
-        if(walletAddress === null) return;
+        if (walletAddress === null) return;
 
         const baseAccount = new PublicKey(walletAddress)
         const provider = getProvider();
@@ -141,7 +141,7 @@ function Dashboard() {
             program.programId,
         );
         const [new_pda, _1] = await PublicKey.findProgramAddress(
-            [baseAccount.toBuffer(), key.toBuffer()],
+            [baseAccount.toBuffer(), key.toBuffer(), Buffer.from(utils.bytes.utf8.encode(seed))],
             program.programId,
         );
         try {
@@ -245,7 +245,7 @@ function Dashboard() {
         const key = new PublicKey(editAddress);
         const newWalletAddress = new PublicKey(changeAddress);
         const [new_pda1, _2] = await PublicKey.findProgramAddress(
-            [baseAccount.toBuffer(), newWalletAddress.toBuffer()],
+            [baseAccount.toBuffer(), newWalletAddress.toBuffer(), Buffer.from(utils.bytes.utf8.encode(seed))],
             program.programId,
         );
         const [pda, _] = await PublicKey.findProgramAddress(
@@ -459,10 +459,10 @@ function Dashboard() {
     }, []);
 
     return (
-        <div  className='App'>
+        <div className='App'>
             <div style={{
-            "margin-top": "13rem",
-        }}>{!walletAddress && renderNotConnectedContainer()}</div>
+                "margin-top": "13rem",
+            }}>{!walletAddress && renderNotConnectedContainer()}</div>
             <CToaster ref={toaster} push={toast} placement="top-end" />
             <div>
                 <button onClick={handleDash} className="cta-button" style={{
@@ -483,7 +483,7 @@ function Dashboard() {
                     "animation": "gradient-animation 4s ease infinite",
 
                 }}
-                     onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
+                    onClick={async () => { await searchWithSeed() }}>Search Your Whitelist</button>
             </div>
             <div style={{
                 "display": "flex",
